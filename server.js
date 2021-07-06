@@ -21,14 +21,20 @@ app.get("/", function (req, res) {
 
 // your first API endpoint... 
 app.get("/api/:date", function (req, res) {
-  let parsedDate = new Date(req.params.date * 1000)
-  console.log(parsedDate.toGMTString())
 
-  if(parsedDate == 'Invalid Date') {
-    res.send({error : "Invalid Date"})
+  let unixSeconds = Date.now();
+  let parsedDate = new Date().toGMTString();
+
+  if(req.params.date) {
+    unixSeconds = req.params.date;
+    parsedDate = new Date(parseInt(unixSeconds)).toGMTString();
   }
 
-  res.send({unix:req.params.date, utc: parsedDate.toGMTString()});
+  if(parsedDate == 'Invalid Date') {
+    res.json({error : parsedDate});
+  }
+
+  res.json({unix:unixSeconds, utc: parsedDate});
 });
 
 
